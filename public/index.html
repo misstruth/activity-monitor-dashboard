@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Activity Monitor</title>
+    <link rel="stylesheet" href="/styles.css?v=20260421-deeper-optimizations" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Local Work Ledger</p>
+          <h1>每日操作监控面板</h1>
+          <p class="hero-copy">
+            按天回看你处理过的文件、终端动作、提示词和当前工作重心。
+          </p>
+        </div>
+
+        <div class="hero-controls">
+          <label class="control">
+            <span>查看日期</span>
+            <input id="dateInput" type="date" />
+          </label>
+          <button id="notificationPermissionButton" class="secondary-button">开启浏览器弹窗</button>
+          <button id="refreshButton" class="primary-button">刷新数据</button>
+        </div>
+
+        <section class="hero-system">
+          <div class="panel-head hero-system-head">
+            <div>
+              <p class="panel-kicker">System Pulse</p>
+              <h2>系统资源与采集状态</h2>
+            </div>
+            <p id="systemMetricsAt" class="muted"></p>
+          </div>
+          <div id="systemMetricsGrid" class="system-metrics-grid"></div>
+          <div id="collectorStatusList" class="collector-status-grid"></div>
+          <div id="systemTopLists" class="system-top-grid"></div>
+        </section>
+      </header>
+
+      <section class="stats-grid" id="statsGrid"></section>
+
+      <section class="panel panel-wide filter-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Smart Filters</p>
+            <h2>项目筛选与关键词搜索</h2>
+          </div>
+          <p id="filterHint" class="muted"></p>
+        </div>
+        <div class="filter-grid">
+          <label class="control">
+            <span>项目</span>
+            <select id="projectFilter"></select>
+          </label>
+          <label class="control">
+            <span>事件类型</span>
+            <select id="eventTypeFilter"></select>
+          </label>
+          <label class="control">
+            <span>关键词</span>
+            <input id="keywordFilter" type="text" placeholder="文件名 / 命令 / 提示词 / 任务名" />
+          </label>
+          <button id="exportButton" class="secondary-button" type="button">导出当前结果</button>
+          <button id="clearFiltersButton" class="secondary-button" type="button">清空筛选</button>
+        </div>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Daily Digest</p>
+            <h2>今日总结</h2>
+          </div>
+        </div>
+        <div id="dailyDigest" class="digest-grid"></div>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Work Insights</p>
+            <h2>工作洞察</h2>
+          </div>
+        </div>
+        <div id="insightsGrid" class="insights-grid"></div>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Prompt Coach</p>
+            <h2>提示词优化建议</h2>
+          </div>
+        </div>
+        <div id="promptInsightsSummary" class="coach-summary"></div>
+        <div id="promptInsightsList" class="timeline-list"></div>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Realtime Snapshot</p>
+            <h2>活跃节奏</h2>
+          </div>
+          <p id="healthLabel" class="muted"></p>
+        </div>
+        <div id="hourlyChart" class="hourly-chart"></div>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Codex Watcher</p>
+              <h2>任务监控</h2>
+            </div>
+            <button id="testNotificationButton" class="secondary-button" type="button">
+              测试弹窗
+            </button>
+          </div>
+          <div id="codexStatusCard" class="status-card"></div>
+          <div id="tasksList" class="timeline-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Manual Capture</p>
+              <h2>记录一条提示词</h2>
+            </div>
+          </div>
+
+          <form id="promptForm" class="prompt-form">
+            <label>
+              <span>提示词内容</span>
+              <textarea
+                id="promptText"
+                rows="5"
+                placeholder="例如：帮我把这个接口改成支持批量导入，并加上失败重试策略"
+              ></textarea>
+            </label>
+
+            <div class="form-row">
+              <label>
+                <span>使用工具</span>
+                <input id="promptTool" type="text" placeholder="ChatGPT / Claude / Codex / 手动" />
+              </label>
+              <button class="primary-button" type="submit">保存提示词</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">High Frequency</p>
+              <h2>高频文件 / 目标</h2>
+            </div>
+          </div>
+          <div id="topFiles" class="list-block"></div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Terminal</p>
+              <h2>最近命令</h2>
+            </div>
+          </div>
+          <div id="commandsList" class="timeline-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Prompt Journal</p>
+              <h2>最近提示词</h2>
+            </div>
+          </div>
+          <div id="promptsList" class="timeline-list"></div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Focus Trace</p>
+              <h2>前台窗口变化</h2>
+            </div>
+          </div>
+          <div id="focusList" class="timeline-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">File Activity</p>
+              <h2>文件操作</h2>
+            </div>
+          </div>
+          <div id="filesList" class="timeline-list"></div>
+        </article>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Raw Feed</p>
+            <h2>统一时间线</h2>
+          </div>
+        </div>
+        <div id="timelineList" class="timeline-list dense"></div>
+      </section>
+    </div>
+
+    <div id="toastStack" class="toast-stack"></div>
+
+    <script src="/app.js?v=20260421-deeper-optimizations"></script>
+  </body>
+</html>

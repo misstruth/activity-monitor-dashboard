@@ -1,0 +1,14 @@
+{
+  "name": "activity-monitor-dashboard",
+  "version": "1.0.0",
+  "description": "Local full-stack activity dashboard for tracking files, operations, and prompts.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "express": "^4.21.2"
+  }
+}
