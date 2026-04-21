@@ -14,13 +14,13 @@
 ## 1. 项目位置
 
 ```bash
-/Users/liuxin/Desktop/410/activity-monitor-dashboard
+/path/to/activity-monitor-dashboard
 ```
 
 ## 2. 安装
 
 ```bash
-cd /Users/liuxin/Desktop/410/activity-monitor-dashboard
+cd /path/to/activity-monitor-dashboard
 npm install
 ```
 
@@ -149,7 +149,7 @@ GET /api/export
 把下面这行加入 `~/.zshrc`：
 
 ```bash
-source /Users/liuxin/Desktop/410/activity-monitor-dashboard/scripts/zsh-activity-hook.zsh
+source /path/to/activity-monitor-dashboard/scripts/zsh-activity-hook.zsh
 ```
 
 然后执行：
@@ -169,7 +169,7 @@ source ~/.zshrc
 ### 方式 B：命令行快速记录
 
 ```bash
-/Users/liuxin/Desktop/410/activity-monitor-dashboard/scripts/log-prompt.sh "帮我总结一下今天改了哪些接口"
+/path/to/activity-monitor-dashboard/scripts/log-prompt.sh "帮我总结一下今天改了哪些接口"
 ```
 
 ### 方式 C：已接入 hook 后直接记录
@@ -217,7 +217,7 @@ GET /api/health
 
 ```bash
 GET /api/dashboard?date=2026-04-21
-GET /api/dashboard?date=2026-04-21&project=/Users/liuxin/Desktop/420
+GET /api/dashboard?date=2026-04-21&project=/path/to/project
 GET /api/dashboard?date=2026-04-21&eventType=file.changed&keyword=python
 ```
 
@@ -267,7 +267,7 @@ POST /api/codex/test-notification
 ### 导出当前筛选结果
 
 ```bash
-GET /api/export?date=2026-04-21&project=/Users/liuxin/Desktop/420&eventType=file.changed&keyword=py
+GET /api/export?date=2026-04-21&project=/path/to/project&eventType=file.changed&keyword=py
 ```
 
 ## 9. 数据文件

@@ -58,8 +58,15 @@ function formatDateTime(value) {
   });
 }
 
+function maskPrivateText(input = "") {
+  return String(input || "")
+    .replace(/\/Users\/[^/]+/g, "/Users/<user>")
+    .replace(/\/home\/[^/]+/g, "/home/<user>")
+    .replace(/([A-Za-z]:\\Users\\)[^\\]+/g, "$1<user>");
+}
+
 function escapeHtml(input = "") {
-  return String(input)
+  return maskPrivateText(input)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -96,11 +103,11 @@ function formatPercent(value) {
 }
 
 function formatPaths(paths = []) {
-  return paths.length ? paths.join("<br />") : "未配置";
+  return paths.length ? paths.map((item) => escapeHtml(item)).join("<br />") : "未配置";
 }
 
 function truncateText(input = "", limit = 120) {
-  const text = String(input || "");
+  const text = maskPrivateText(input);
   return text.length > limit ? `${text.slice(0, limit)}...` : text;
 }
 
@@ -172,13 +179,13 @@ function renderFilters(summary) {
 
   const scopeParts = [];
   if (summary?.activeFilters?.projectLabel) {
-    scopeParts.push(`项目：${summary.activeFilters.projectLabel}`);
+    scopeParts.push(`项目：${maskPrivateText(summary.activeFilters.projectLabel)}`);
   }
   if (summary?.activeFilters?.eventTypeLabel) {
     scopeParts.push(`事件：${summary.activeFilters.eventTypeLabel}`);
   }
   if (summary?.activeFilters?.keyword) {
-    scopeParts.push(`关键词：${summary.activeFilters.keyword}`);
+    scopeParts.push(`关键词：${maskPrivateText(summary.activeFilters.keyword)}`);
   }
 
   filterHint.textContent = scopeParts.length
@@ -556,12 +563,13 @@ function showToast(title, body) {
 }
 
 function buildTaskPopupMessage(task) {
-  const prompt =
+  const prompt = maskPrivateText(
     task?.payload?.promptText ||
-    task?.payload?.title ||
-    task?.payload?.threadTitle ||
-    "未识别到提示词";
-  const cwd = task?.payload?.cwd || "";
+      task?.payload?.title ||
+      task?.payload?.threadTitle ||
+      "未识别到提示词"
+  );
+  const cwd = maskPrivateText(task?.payload?.cwd || "");
   return {
     title: "任务完成",
     body: `提示词：${prompt}${cwd ? `\n工作区：${cwd}` : ""}`

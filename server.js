@@ -178,7 +178,8 @@ function resolveWatchPaths(rawWatchPaths, rawMonitorRoot) {
 
   return [...seeds]
     .map((item) => path.resolve(item))
-    .filter((item) => fs.existsSync(item));
+    .filter((item) => fs.existsSync(item))
+    .filter((item) => item !== normalizePath(os.homedir()));
 }
 
 function safeWriteJson(filePath, payload) {
@@ -931,7 +932,10 @@ function maskSensitiveSegments(text) {
     .replace(
       /((?:账号密码|密码|password|token|apikey|api key|secret|密钥)\s*(?:是|为|:|：|=)?\s*)([^，。；,;\n]+)/gi,
       "$1******"
-    );
+    )
+    .replace(/\/Users\/[^/]+/g, "/Users/<user>")
+    .replace(/\/home\/[^/]+/g, "/home/<user>")
+    .replace(/([A-Za-z]:\\Users\\)[^\\]+/g, "$1<user>");
 }
 
 function buildPromptIssues(promptText) {
@@ -1527,7 +1531,7 @@ function startFileWatcher() {
 }
 
 function sanitizeNotificationText(input, fallback = "") {
-  return String(input || fallback || "")
+  return maskSensitiveSegments(String(input || fallback || ""))
     .replaceAll("\\", "\\\\")
     .replaceAll('"', '\\"');
 }
